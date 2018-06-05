@@ -30,6 +30,5 @@ qiime deblur denoise-16S \
 	--quiet
 
 echo "Denoise completed (2/2 preproc)"
-echo "\n"
 echo "Sequences trimmed at 250pb"
 
