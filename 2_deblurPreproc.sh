@@ -32,6 +32,6 @@ qiime deblur denoise-16S \
 	--p-jobs-to-start "${threads}" \
 	--quiet
 
-echo "Denoise completed (2/2 preproc)"
-echo "Sequences trimmed at 250pb"
+echo "Denoise completed (2/2)"
+echo "Sequences trimmed at "${threads}"pb"
 
