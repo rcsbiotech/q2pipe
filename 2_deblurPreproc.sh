@@ -7,7 +7,7 @@ trim_length=$3
 mkdir -p "${artdir}/deblur-out"
 
 echo "Beginning quality-filter q-score (0/2)"
-"
+
 qiime quality-filter q-score \
 	--i-demux ${artdir}/demux-paired-end.qza \
 	--p-min-quality 4 \
