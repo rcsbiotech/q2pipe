@@ -2,10 +2,12 @@
 
 artdir=$1
 threads=$2
-trim_length=250
+trim_length=$3
 
 mkdir -p "${artdir}/deblur-out"
 
+echo "Beginning quality-filter q-score (0/2)"
+"
 qiime quality-filter q-score \
 	--i-demux ${artdir}/demux-paired-end.qza \
 	--p-min-quality 4 \
@@ -16,7 +18,8 @@ qiime quality-filter q-score \
 	--o-filter-stats ${artdir}/deblur-filter-stats.qza \
 	--o-filtered-sequences ${artdir}/deblur-filtered.qza
 
-echo "Quality filter completed (1/2 preproc)"
+echo "Quality filter completed (1/2)"
+echo "Beginning 16S denoise..."
 
 qiime deblur denoise-16S \
 	--i-demultiplexed-seqs ${artdir}/deblur-filtered.qza \
