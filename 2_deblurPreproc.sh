@@ -23,10 +23,10 @@ echo "Beginning 16S denoise..."
 
 qiime deblur denoise-16S \
 	--i-demultiplexed-seqs ${artdir}/deblur-filtered.qza \
-	--o-representative-sequences ${PWD}/rep-seqs-deblur.qza \
-	--o-stats ${PWD}/deblur-stats.qza \
-	--o-table ${PWD}/table-deblur.qza \
-	--output-dir ${PWD}/deblur-out \
+	--o-representative-sequences ${artdir}/rep-seqs-deblur.qza \
+	--o-stats ${artdir}/deblur-stats.qza \
+	--o-table ${artdir}/table-deblur.qza \
+	--output-dir ${artdir}/deblur-out \
 	--p-sample-stats \
 	--p-trim-length "${trim_length}" \	
 	--p-jobs-to-start "${threads}" \
