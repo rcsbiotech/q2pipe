@@ -1,0 +1,340 @@
+#!/bin/bash
+#
+#              INGLÊS/ENGLISH
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#  http://www.gnu.org/copyleft/gpl.html
+#
+#
+#             PORTUGUÊS/PORTUGUESE
+#  Este programa é distribuído na expectativa de ser útil aos seus
+#  usuários, porém NÃO TEM NENHUMA GARANTIA, EXPLÍCITAS OU IMPLÍCITAS,
+#  COMERCIAIS OU DE ATENDIMENTO A UMA DETERMINADA FINALIDADE.  Consulte
+#  a Licença Pública Geral GNU para maiores detalhes.
+#  http://www.gnu.org/copyleft/gpl.html
+#
+#  Copyright (C) 2018  Universidade Estadual Paulista - UNESP
+#
+#  Universidade Estadual Paulista "Júlio de Mesquita Filho"
+#  Laboratório de Bioinformática
+#
+#  Rafael Correia da Silva
+#  rcs.biotec@gmail.com
+#
+
+## Pipe: da anotação até o biom
+# Implementado: blast e vsearch, resta classificador
+# Resta implementar:
+# 0. Export visual da diversidade beta do QIIME2
+# 1. Feature-classifier
+# 3. Pré-processamento
+
+# Obtem os parâmetros
+source intel/parameters.sh
+
+## Criando as pastas
+mkdir -p ${testdir}
+mkdir -p ${testdir}/rarefied
+mkdir -p ${testdir}/unrare
+
+## Limpa o log, cria novamente
+rm -f ${testdir}/run_report
+touch ${testdir}/run_report
+
+## [.. Clusterização de novo ..] ##
+## Roda a clusterização de novo caso tenha solicitado ##
+if [[ ${denovo} = "yes" ]]; then
+	if [ ! -f ${seqsdir}/${table_seqs} ]; then
+	
+		mkdir -p ${seqsdir}
+
+		qiime vsearch cluster-features-open-reference \
+			--i-sequences ${artdir}/${rep_seqs} \
+			--i-table ${artdir}/${table_seqs} \
+			--i-reference-sequences ${ref_seqs} \
+			--p-perc-identity ${parameter_cluster_id} \
+			--p-threads ${parameter_threads} \
+			--o-clustered-table ${seqsdir}/${table_seqs} \
+			--o-clustered-sequences ${seqsdir}/${rep_seqs} \
+			--o-new-reference-sequences ${seqsdir}/${testname}.new_refs.qza \
+			--verbose
+	fi
+else
+		
+	# Define o diretório de sequências como o mesmo dos artefatos
+	# Caso a anotação não seja a denovo, a entrada das sequências
+	# será a mesma em que se encontram os artefatos gerados pelo
+	# pré-processamento
+	seqsdir=`echo ${artdir}`
+							
+fi
+
+	## Classificação - se taxonomy.qza não existir
+
+if [ ! -f ${testdir}/taxonomy.qza ]; then
+## Opção: VSEARCH
+	if [[ $annotator = "vsearch" ]]; then
+		
+	qiime feature-classifier classify-consensus-vsearch \
+	    	--i-query ${seqsdir}/${rep_seqs} \
+	    	--i-reference-reads ${ref_seqs} \
+		--i-reference-taxonomy ${ref_tax} \
+		--p-threads ${parameter_threads} \
+		--p-perc-identity ${parameter_identity} \
+		--o-classification ${testdir}/taxonomy.qza \
+	    	--verbose 
+	fi
+				
+	## Opção: BLAST
+	if [[ $annotator = "blast" ]]; then
+	
+qiime feature-classifier classify-consensus-blast \
+	--i-query ${seqsdir}/${rep_seqs} \
+	--i-reference-reads ${ref_seqs} \
+	--i-reference-taxonomy ${ref_tax} \
+	--p-perc-identity ${parameter_identity} \
+	--o-classification ${testdir}/taxonomy.qza \
+       	--verbose
+	fi
+fi
+														    
+# 3. Filtro dos indesejáveis - blast
+## Filtrar cloroplastos e mitocôndrias
+qiime taxa filter-table \
+	--i-table ${seqsdir}/${table_seqs} \
+	--i-taxonomy ${testdir}/taxonomy.qza \
+	--p-exclude Mitochondria,Chloroplast \
+	--o-filtered-table ${testdir}/pure-table.qza
+        
+# 4. Saída: arquivo BIOM não rarefeito
+qiime tools export \
+	--input-path ${testdir}/pure-table.qza \
+	--output-path ${testdir}/unrare
+
+# Exportar a referência de taxonomia
+qiime tools export \
+	--input-path ${testdir}/taxonomy.qza \
+	--output-path ${testdir}
+	
+## Fixa o cabeçalho da OTU Table
+cat ${testdir}/taxonomy.tsv | sed 1d > /tmp/taxtemp.tsv
+sed -i '1 i\#OTUID\ttaxonomy\tconfidence' /tmp/taxtemp.tsv
+rm ${testdir}/taxonomy.tsv
+mv /tmp/taxtemp.tsv ${testdir}/taxonomy.tsv
+head ${testdir}/taxonomy.tsv
+
+## Sumarizando o experimento - contagens
+qiime feature-table summarize \
+	    --i-table ${testdir}/pure-table.qza \
+	    --o-visualization ${testdir}/pure-table.qzv \
+	    --m-sample-metadata-file intel/metadata.tsv
+    
+## Exportando HTML
+qiime tools export \
+	--input-path ${testdir}/pure-table.qzv \
+	--output-path ${testdir}/pure-table-html
+	
+# Obtendo o valor de rarefação
+rarevalue=`tail -1 ${testdir}/pure-table-html/sample-frequency-detail.csv | sed 's/.*,//' | sed 's/\..//'`
+tail -15 ${testdir}/pure-table-html/sample-frequency-detail.csv
+echo "Rarefaction is: ${rarevalue}"
+	
+## Rarefação
+qiime feature-table rarefy \
+	--i-table ${testdir}/pure-table.qza \
+	--p-sampling-depth ${rarevalue} \
+	--o-rarefied-table ${testdir}/rarefied/rare-table.qza
+	
+## Exportando a tabela biom rarefeita
+qiime tools export \
+		--input-path ${testdir}/rarefied/rare-table.qza \
+		--output-path ${testdir}/rarefied
+
+## Juntando biom e taxonomia
+biom add-metadata \
+		-i ${testdir}/rarefied/feature-table.biom \
+		-o ${testdir}/rarefied/tabletax-rare.biom \
+		--observation-metadata-fp ${testdir}/taxonomy.tsv \
+		--sc-separated taxonomy
+	
+biom add-metadata \
+		-i ${testdir}/unrare/feature-table.biom \
+		-o ${testdir}/unrare/tabletax-unrare.biom \
+		--observation-metadata-fp ${testdir}/taxonomy.tsv \
+		--sc-separated taxonomy
+	
+## Gerando as OTU tables (sem nomes)
+biom convert -i ${testdir}/unrare/feature-table.biom -o ${testdir}/unrare/otu_table.txt --to-tsv
+biom convert -i ${testdir}/rarefied/feature-table.biom -o ${testdir}/rarefied/otu_table.txt --to-tsv
+	
+## Summarize taxa - REQUER QIIME1
+source deactivate qiime2
+source activate qiime
+
+## Gerar planilhas (1) rarefeitas (2) não rarefeitas
+summarize_taxa.py --absolute_abundance -i ${testdir}/rarefied/tabletax-rare.biom -o ${testdir}/rarefied/tabulated
+
+summarize_taxa.py --absolute_abundance -i ${testdir}/unrare/tabletax-unrare.biom -o ${testdir}/unrare/tabulated
+
+source deactivate qiime
+source activate qiime2
+
+
+if [[ ${run_diversity} = "yes" ]]; then
+
+	# Core-metrics: phylogeny
+	if [ ! -f ${artdir}/${testname}.rooted-tree.qza ]; then
+		qiime phylogeny align-to-tree-mafft-fasttree \
+			--i-sequences ${seqsdir}/${rep_seqs} \
+			--o-alignment ${artdir}/${testname}.aligned-rep-seqs.qza \
+			--o-masked-alignment ${artdir}/${testname}.masked-aligned-rep-seqs.qza \
+			--o-tree ${artdir}/${testname}.unrooted-tree.qza \
+			--o-rooted-tree ${artdir}/${testname}.rooted-tree.qza \
+			--verbose
+	fi
+
+	## Core	diversity
+	qiime diversity core-metrics-phylogenetic \
+		--i-phylogeny ${artdir}/${testname}.rooted-tree.qza \
+		--i-table ${testdir}/pure-table.qza \
+		--p-sampling-depth ${rarevalue} \
+		--m-metadata-file ${inteldir}/metadata.tsv \
+		--output-dir ${testdir}/core-metrics-results
+
+	# Cria a rarefação máxima
+	maxrare=$((10*${rarevalue}))
+
+	## Alpha diversity
+	qiime diversity alpha-rarefaction \
+		--i-table ${testdir}/pure-table.qza \
+		--i-phylogeny ${artdir}/${testname}.rooted-tree.qza \
+		--p-max-depth ${maxrare} \
+		--m-metadata-file ${inteldir}/metadata.tsv \
+		--o-visualization ${testdir}/alpha-rarefaction.qzv
+
+	## Exportando HTML
+	qiime tools export \
+		--input-path ${testdir}/alpha-rarefaction.qzv \
+		--output-path ${testdir}/alpha-rarefaction
+	
+	qiime tools export \
+		--input-path ${testdir}/core-metrics-results/jaccard_emperor.qzv \
+		--output-path ${testdir}/core-metrics-results/jaccard_emperor
+		
+	qiime tools export \
+		--input-path ${testdir}/core-metrics-results/weighted_unifrac_emperor.qzv \
+		--output-path ${testdir}/core-metrics-results/weighted_unifrac_emperor
+		
+	qiime tools export \
+		--input-path ${testdir}/core-metrics-results/unweighted_unifrac_emperor.qzv \
+		--output-path ${testdir}/core-metrics-results/unweighted_unifrac_emperor
+	
+	qiime tools export \
+		--input-path ${testdir}/core-metrics-results/bray_curtis_emperor.qzv \
+		--output-path ${testdir}/core-metrics-results/bray_curtis_emperor
+fi
+	
+	
+if [[ ${run_corrupt} = "yes" ]]; then
+	
+	## Exportando com cloroplastos e mitocôndria
+	# Primeiro: exportando o BIOM
+	mkdir -p ${testdir}/corrupt
+
+	qiime tools export \
+		--input-path ${seqsdir}/${table_seqs}  \
+		--output-path ${testdir}/corrupt
+	
+	## Sumarizando o experimento - contagens
+	qiime feature-table summarize \
+	    --i-table ${seqsdir}/${table_seqs} \
+	    --o-visualization ${testdir}/corrupt/corrupt-table.qzv \
+	    --m-sample-metadata-file intel/metadata.tsv
+	    
+	## Exportando HTML
+	qiime tools export \
+		--input-path ${testdir}/corrupt/corrupt-table.qzv \
+		--output-path ${testdir}/corrupt/corrupt-table-html
+		
+	# Obtendo o valor de rarefação
+	corrupt_rarevalue=`tail -1 ${testdir}/corrupt/corrupt-table-html/sample-frequency-detail.csv | sed 's/.*,//' | sed 's/\..//'`
+	tail -15 ${testdir}/corrupt/corrupt-table-html/sample-frequency-detail.csv
+	echo "Rarefaction is: ${corrupt_rarevalue}"
+	
+	## Rarefação
+	qiime feature-table rarefy \
+		--i-table ${seqsdir}/${table_seqs} \
+		--p-sampling-depth ${corrupt_rarevalue} \
+		--o-rarefied-table ${testdir}/corrupt/rare-table.qza
+	
+	## Exportando a tabela biom rarefeita
+	qiime tools export \
+		--input-path ${testdir}/corrupt/rare-table.qza \
+		--output-path ${testdir}/corrupt
+	
+	## Juntando biom e taxonomia
+	biom add-metadata \
+		-i ${testdir}/corrupt/feature-table.biom \
+		-o ${testdir}/corrupt/tabletax-rare.biom \
+		--observation-metadata-fp ${testdir}/taxonomy.tsv \
+		--sc-separated taxonomy
+	
+	# Gera a OTU table convertida
+	biom convert -i ${testdir}/corrupt/feature-table.biom -o ${testdir}/corrupt/otu_table.txt --to-tsv
+
+	source deactivate qiime2
+	source activate qiime
+
+	summarize_taxa.py --absolute_abundance -i ${testdir}/corrupt/tabletax-rare.biom -o ${testdir}/corrupt/tabulated
+
+	source deactivate qiime
+	source activate qiime2
+fi
+
+# # # # # [. LOG SECTION .] # # # # # # # # #
+
+# Reporting metrics
+
+# 0. Parameters report:
+echo "Parameters for this run were: " >> ${testdir}/run_report
+echo "Did this run clusterized open reference? $denovo" >> ${testdir}/run_report
+echo "What was the annotation program? $annotator" >> ${testdir}/run_report
+echo "What was the identity (%) for annotation? $parameter_identity" >> ${testdir}/run_report
+
+echo >> ${testdir}/run_report
+
+# 1. OTU number
+otu_lines=`wc ${testdir}/rarefied/otu_table.txt -l | sed 's/ .*//'`
+otu_no_headers=`expr "$otu_lines" - 1`
+echo "| -------- Core information for analysis ---------- |" >> ${testdir}/run_report
+echo "Number of OTUs is: $otu_no_headers" >> ${testdir}/run_report
+
+# 2. Unique genera
+genera_lines=`wc ${testdir}/rarefied/tabulated/tabletax-rare_L6.txt -l | sed 's/ .*//'`
+genera_no_headers=`expr "$genera_lines" - 1`
+echo "Unique genera for analysis: $genera_no_headers" >> ${testdir}/run_report
+
+# 3. Unique "Others"
+unique_others=`grep "\;Other" ${testdir}/rarefied/tabulated/tabletax-rare_L6.txt | wc -l`
+echo "OTUs not classified up to Genus (Other) were: ${unique_others}." >> ${testdir}/run_report
+
+# 4. Number of Phylla
+phylla_lines=`wc ${testdir}/rarefied/tabulated/tabletax-rare_L2.txt -l | sed 's/ .*//'`
+phylla_no_headers=`expr "$phylla_lines" - 1`
+echo "Unique phylla for analysis: $phylla_no_headers" >> ${testdir}/run_report
+
+# 5. Rarefaction value
+echo "The rarefaction value was: $rarevalue" >> ${testdir}/run_report
+
+# 6. Were there Archaea?
+if grep -q "Archaea" ${testdir}/rarefied/tabulated/tabletax-rare_L2.txt; then
+	echo "Archaea were found in the analysis." >> ${testdir}/run_report
+else
+	echo "Archaea were not found in the analysis." >> ${testdir}/run_report
+fi
+
+# Zip results
+tar -zvcf output/"results.$testname.tar.gz" ${testdir}/rarefied ${testdir}/unrare ${testdir}/pure-table-html ${testdir}/core-metrics-results ${testdir}/alpha-rarefaction ${testdir}/run_report #${testdir}/corrupt
+
