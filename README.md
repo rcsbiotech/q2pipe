@@ -1,30 +1,17 @@
 # q2pipe
-Qiime2 16S/ITS pipeline
 
-# Script 01 - Importing data
+QIIME2 16S pipeline
 
-PairedEnd One Sample per Lane already OK
-Other formats: to do (metadata with path file)
+From QIIME2, runs a complete analysis from your data based on a range of optimizable parameters, such as trimming and truncate length, annotation identity, and cluster parameters
 
-# Script 02 - Preprocessing Deblur
+## Currently in development
 
-Basic Run with Trim Length OK
-Stop point on Summary: to do
-Dada2: To test and redo
-Additional parameters: to do
+DADA2 iterative pre-processing over a range of parameters
 
-# Script 03 - Feature Table Generator
+## To be implemented
 
-To add
+1. Annotation with VSEARCH/BLAST over SILVA132 and the latest Greengenes
+2. Core diversity analysis with QIIME2
+3. Merge-Denoise-Deblur optimized pipeline
+4. Automatic q2-feature-classifier
 
-# Script 04 - Phylogeny
-
-To add
-
-# Script 05 - Taxonomy, export to biom format and MicrobiomeAnalyzer
-
-To add
-
-# Script 06 - Core metrics
-
-To add
