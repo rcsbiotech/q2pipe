@@ -24,7 +24,7 @@ WIP
 
 ## Current schema
 
-![Q2pipe-schema-09-10](https://drive.google.com/a/unesp.br/uc?id=159mfxaU5tcffqKr9z9j37gCIDij2_-og)
+![Q2pipe-schema-09-10](https://drive.google.com/a/unesp.br/uc?id=1XZGomZGv8TB4KruqEAJLdPNe2L1hJn1O)
 
 ## Currently in development
 
