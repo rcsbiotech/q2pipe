@@ -1,10 +1,30 @@
-## Declaração de variáveis
-# Diretório para execução da análise
+# QIIME2 pipeline variables
+
+# Variable declaration
+
+# Directory to store analysis outputs
 testdir="./test/test38B"
-# Diretório com os arquivos da análise original
+testname=`basename ./test/test38B | sed 's/test//'`
+
+# Directory to store qiime2 artifacts
 artdir="./artifacts"
-# Diretório com os metadados e descritivos
+
+# Rleative path to intel directory
 inteldir="./intel"
+
+# Pre-processing
+
+## Pre-process the data with DADA?
+preproc="no"
+
+	# If yes, pass the preprocessing parameters
+	trunc_f=280
+	trunc_r=220
+	trim_f=10
+	trim_r=10
+	max_ee=6
+
+
 # Diretório para a identidade da anotação
 parameter_identity=0.97
 # Diretório com o número de processadores
@@ -28,8 +48,8 @@ ref_seqs="/data/db/qiime/SILVA_132_QIIME_release/QIIME2-artifacts/silva132_99.qz
 ref_tax="/data/db/qiime/SILVA_132_QIIME_release/QIIME2-artifacts/silva132_99_taxonomy.qza"
 # GDP: ref_tax="/data/db/qiime/GRD/artifacts/GRD_taxonomy.qza"
 # Arquivo de sequências representativas e tabela
-rep_seqs="38A-rep-seqs-dada2.qza"
-table_seqs="38A-table-dada2.qza"
+rep_seqs="${testname}-rep-seqs-dada2.qza"
+table_seqs="${testname}-table-dada2.qza"
 # Correr a diversidade?
 run_diversity="yes"
 # Gerar com cloroplasto e mitocondrias?

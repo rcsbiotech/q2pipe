@@ -1,0 +1,49 @@
+#!/bin/bash
+#
+#
+# BSD 2-Clause License
+#
+# Copyright (c) 2018, Rafael Correia da Silva
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# * Redistributions of source code must retain the above copyright notice, this
+# list of conditions and the following disclaimer.
+#
+# # * Redistributions in binary form must reproduce the above copyright notice,
+# this list of conditions and the following disclaimer in the documentation
+# and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+## Get parameters
+
+source intel/parameters.sh
+
+if [[ ${preproc} = "yes" ]]; then
+	
+	qiime dada2 denoise-paired \
+		--i-demultiplexed-seqs artifact/demux.qza \
+		--p-trunc-len-f ${trunc_f} \
+		--p-trunc-len-r ${trunc_r} \
+		--p-trim-left-f ${trim_f} \
+		--p-trim-left-r ${trim_r} \
+		--p-n-threads ${threads} \
+		--p-max-ee ${max_ee} \
+		--verbose \
+		--o-representative-sequences artifacts/${testname}-rep-seqs-dada2.qza \
+		--o-table artifacts/${testname}-table-dada2.qza \
+		--o-denoising-stats artifacts/${testname}-stats-dada2.qza
+
+fi
