@@ -1,28 +1,29 @@
 # q2pipe
 
 QIIME2 16S pipeline - WORK IN PROGRESS
+Implemented for QIIME2 2018.8
 
 Using QIIME2, runs a complete analysis from your data based on a range of optimizable parameters, such as trimming and truncate length, annotation identity, and cluster parameters.
 
-Requires:
+### Requires:
 
 - [Conda package manager](https://conda.io/docs/user-guide/install/index.html);
 - [QIIME1 installed via conda](http://qiime.org/install/install.html), will be removed soon;
 - [QIIME2 installed via conda](https://docs.qiime2.org/2018.8/install/);
 - [BIOM format](http://biom-format.org/)
 
-What you must feed
+### What you must feed
 
 - Analysis parameters, such as name, trimming and truncation values, max. expected errors, which algorithm to use for annotation, and such.
 - [A manifest text file for data](https://docs.qiime2.org/2018.8/tutorials/importing/?highlight=manifest#fastq-manifest-formats);
 - [A sample metadata text file](https://docs.qiime2.org/2018.8/tutorials/moving-pictures/?highlight=metadata#sample-metadata);
 - Your paired-end sequences.
 
-## Suggested workflow
+### Suggested workflow
 
 WIP
 
-## Current schema
+### Current schema
 
 ![Q2pipe-schema-09-10](https://drive.google.com/a/unesp.br/uc?id=1XZGomZGv8TB4KruqEAJLdPNe2L1hJn1O)
 
