@@ -28,9 +28,10 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ## Get parameters
-
 source intel/parameters.sh
 
+
+## Run DADA2 Pre-processing on demux.qza artifact
 if [[ ${preproc} = "yes" ]]; then
 	
 	qiime dada2 denoise-paired \
@@ -47,3 +48,38 @@ if [[ ${preproc} = "yes" ]]; then
 		--o-denoising-stats artifacts/${testname}-stats-dada2.qza
 
 fi
+
+## Outputs for pre-processing stats
+echo "Generating table counts"
+echo
+
+### Generates visual artifact (QZV) for feature (OTU) counts
+qiime feature-table summarize \
+	--i-table artifacts/${testname}-table-dada2.qza \
+	--o-visualization html/${testname}-table.qzv \
+	--m-sample-metadata-file intel/metadata.tsv
+
+### Export as HTML
+qiime tools export \
+	--input-path html/${testname}-table.qzv \
+	--output-path output/${testname}-table
+
+echo "Table count OK. Now generating representative sequences."
+
+### Generate visual artifact (QZV) for representative sequences (rep-seqs)
+qiime feature-table tabulate-seqs \
+	--i-data artifacts/${testname}-rep-seqs-dada2.qza \
+	--o-visualization html/${testname}-rep-seqs-dada2.qzv
+
+### Again, export as HTML
+qiime tools export \
+	--input-path html/${testname}-rep-seqs-dada2.qzv \
+	--outputh-path output/${testname}-rep-seqs
+
+
+### Exporting pre-processing stats
+# Starting reads, denoised reads, surviving reads as TSV
+qiime tools export \
+	--input-path artifacts/${testname}-stats-dada2.qza \
+	--output-path output/${testname}-preproc-stats.tsv
+
