@@ -83,3 +83,9 @@ qiime tools export \
 	--input-path artifacts/${testname}-stats-dada2.qza \
 	--output-path output/${testname}-preproc-stats.tsv
 
+echo "Pre-processing OK"
+echo
+echo "Now, starting core analysis..."
+
+## Run annotation and analysis
+./q2pipe
