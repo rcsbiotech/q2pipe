@@ -11,13 +11,24 @@ Using QIIME2, runs a complete analysis from your data based on a range of optimi
 - [QIIME1 installed via conda](http://qiime.org/install/install.html), will be removed soon;
 - [QIIME2 installed via conda](https://docs.qiime2.org/2018.8/install/);
 - [BIOM format](http://biom-format.org/)
+- Databases: SILVA132 and Greengenes as artifacts, will upload any moment soon;
+- [PICRUSt](http://picrust.github.io/picrust/install.html#install);
 
-### What you must feed
+### What you must feed the pipeline
 
 - Analysis parameters, such as name, trimming and truncation values, max. expected errors, which algorithm to use for annotation, and such.
 - [A manifest text file for data](https://docs.qiime2.org/2018.8/tutorials/importing/?highlight=manifest#fastq-manifest-formats);
 - [A sample metadata text file](https://docs.qiime2.org/2018.8/tutorials/moving-pictures/?highlight=metadata#sample-metadata);
 - Your paired-end sequences.
+
+### What does the pipeline do
+
+1. Imports your data as a QIIME2 artifact;
+2. Denoise it using the DADA2 pipeline;
+3. Classifies your data using either BLAST or VSEARCH, against the latest Greengenes and SILVA database;
+4. Run core diversity and phylogeny analysis;
+5. (WIP) Predict the metagenomes with PICRUSt;
+6. Reports all results as HTML, plain text and a usable BIOM-taxonomy file.
 
 ### Suggested workflow
 
