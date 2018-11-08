@@ -169,18 +169,9 @@ biom add-metadata \
 biom convert -i ${testdir}/unrare/feature-table.biom -o ${testdir}/unrare/otu_table.txt --to-tsv
 biom convert -i ${testdir}/rarefied/feature-table.biom -o ${testdir}/rarefied/otu_table.txt --to-tsv
 	
-## Summarize taxa - REQUER QIIME1
-source deactivate qiime2
-source activate qiime
-
 ## Gerar planilhas (1) rarefeitas (2) não rarefeitas
-summarize_taxa.py --absolute_abundance -i ${testdir}/rarefied/tabletax-rare.biom -o ${testdir}/rarefied/tabulated
-
-summarize_taxa.py --absolute_abundance -i ${testdir}/unrare/tabletax-unrare.biom -o ${testdir}/unrare/tabulated
-
-source deactivate qiime
-source activate qiime2
-
+./modules/summarize_taxa.py --absolute_abundance -i ${testdir}/rarefied/tabletax-rare.biom -o ${testdir}/rarefied/tabulated
+./modules/summarize_taxa.py --absolute_abundance -i ${testdir}/unrare/tabletax-unrare.biom -o ${testdir}/unrare/tabulated
 
 if [[ ${run_diversity} = "yes" ]]; then
 
@@ -284,13 +275,8 @@ if [[ ${run_corrupt} = "yes" ]]; then
 	# Gera a OTU table convertida
 	biom convert -i ${testdir}/corrupt/feature-table.biom -o ${testdir}/corrupt/otu_table.txt --to-tsv
 
-	source deactivate qiime2
-	source activate qiime
+	./modules/summarize_taxa.py --absolute_abundance -i ${testdir}/corrupt/tabletax-rare.biom -o ${testdir}/corrupt/tabulated
 
-	summarize_taxa.py --absolute_abundance -i ${testdir}/corrupt/tabletax-rare.biom -o ${testdir}/corrupt/tabulated
-
-	source deactivate qiime
-	source activate qiime2
 fi
 
 # # # # # [. LOG SECTION .] # # # # # # # # #

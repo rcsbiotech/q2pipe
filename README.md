@@ -7,11 +7,10 @@ Using QIIME2, runs a complete analysis from your data based on a range of optimi
 
 ### What you must install before running:
 
-- [Conda package manager](https://conda.io/docs/user-guide/install/index.html);
-- [QIIME1 installed via conda](http://qiime.org/install/install.html), will be removed soon;
-- [QIIME2 installed via conda](https://docs.qiime2.org/2018.8/install/);
-- [BIOM format](http://biom-format.org/)
-- [PICRUSt](http://picrust.github.io/picrust/install.html#install);
+- [Conda package manager](https://conda.io/docs/user-guide/install/index.html) package manager that installs QIIME2 easily;
+- [QIIME2 installed via conda](https://docs.qiime2.org/2018.8/install/), the main analysis package;
+- [BIOM format](http://biom-format.org/) for data wrangling;
+- [PICRUSt](http://picrust.github.io/picrust/install.html#install) metagenome predictor;
 
 ### What you must feed the pipeline
 
