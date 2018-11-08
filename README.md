@@ -31,11 +31,12 @@ Using QIIME2, runs a complete analysis from your data based on a range of optimi
 
 ### Suggested workflow (WIP)
 
-1. Create a manifest file, with the name manifest.csv, then put it inside the intel directory.
-2. Run q2manifest to import your data as a QIIME2 artifact.
-3. Open the demux-summary.html in a web browser, and pick parameters suitable to your sequences.
-4. Write these parameters on intel/parameters.sh.
-5. Run q2pipe and then q2picrust. That's it.
+1. Turn on your qiime2 (usually with `source activate qiime2-2018.8`)
+2. Create a manifest file, with the name manifest.csv, then put it inside the intel directory.
+3. Run q2manifest to import your data as a QIIME2 artifact.
+4. Open the demux-summary.html in a web browser, and pick parameters suitable to your sequences.
+5. Write these parameters on intel/parameters.sh.
+6. Run q2pipe and then q2picrust. That's it. Your results will be found at the test directory.
 
 ### Current schema
 
