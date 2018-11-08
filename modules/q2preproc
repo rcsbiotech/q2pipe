@@ -28,7 +28,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ## Get parameters
-source intel/parameters.sh
+source intel/parameters.txt
 
 
 ## Run DADA2 Pre-processing on demux.qza artifact

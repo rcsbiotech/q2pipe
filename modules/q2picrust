@@ -35,7 +35,7 @@
 	# Analysis of this table on PICRUST
 
 ## Resourcing parameters
-source ./intel/parameters.sh
+source ./intel/parameters.txt
 
 ## Creates PICRUSt outdir
 #mkdir -p ${testdir}/picrust.${testname}

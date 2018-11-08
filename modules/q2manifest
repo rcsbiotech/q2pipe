@@ -28,7 +28,7 @@
 
 # Imports file from manifest, generating DEMUX file
 # Gathering parameters
-source intel/parameters.sh
+source intel/parameters.txt
 
 # Creating first folders
 mkdir -p artifacts test html output
