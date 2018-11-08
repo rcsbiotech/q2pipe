@@ -30,6 +30,10 @@
 # Gathering parameters
 source intel/parameters.sh
 
+# Creating first folders
+mkdir -p artifacts test html output
+
+# Importing sequences as a single artifact
 echo "Importing your sequences from manifest file..."
 
 if [[ ${paired_seqs} = "yes" ]]; then
