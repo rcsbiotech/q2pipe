@@ -5,13 +5,12 @@ Implemented for QIIME2 2018.8
 
 Using QIIME2, runs a complete analysis from your data based on a range of optimizable parameters, such as trimming and truncate length, annotation identity, and cluster parameters.
 
-### Requires:
+### What you must install before running:
 
 - [Conda package manager](https://conda.io/docs/user-guide/install/index.html);
 - [QIIME1 installed via conda](http://qiime.org/install/install.html), will be removed soon;
 - [QIIME2 installed via conda](https://docs.qiime2.org/2018.8/install/);
 - [BIOM format](http://biom-format.org/)
-- Databases: SILVA132 and Greengenes rep-sequences as artifacts.
 - [PICRUSt](http://picrust.github.io/picrust/install.html#install);
 
 ### What you must feed the pipeline

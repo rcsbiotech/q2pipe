@@ -78,10 +78,10 @@ predict_metagenomes.py \
 	-i  ${testdir}/picrust.${testname}/normalized_otus.biom \
 	-o  ${testdir}/picrust.${testname}/predicted_cog.biom
 
-## Predict metagenomes - RFAM (already TSV output)
+## Predict metagenomes - RFAM (BIOM format only)
 predict_metagenomes.py \
 	-i  ${testdir}/picrust.${testname}/normalized_otus.biom \
-	-o  ${testdir}/picrust.${testname}/predicted_rfam.tsv
+	-o  ${testdir}/picrust.${testname}/predicted_rfam.biom
 
 
 ## Sorting PICRUSt output by category - KEGG and COG
@@ -130,6 +130,7 @@ for value in 1 2; do
 		-c COG_Category \
 		-l ${value} \
 		--format_tab_delimited
+done
 
 echo "Finished functional/metagenome prediction"
 echo

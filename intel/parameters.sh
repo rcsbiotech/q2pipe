@@ -3,6 +3,7 @@
 # Variable declaration
 
 # Directory to store analysis outputs
+coredir=`echo $PWD`
 testdir="./test/test01A"
 testname=`basename ${testdir} | sed 's/test//'`
 
@@ -42,12 +43,12 @@ parameter_cluster_id=0.99
 # Reference sequences (qza) - current: Silva 0.99 full length
 # SILVA 128: ref_seqs="/work/db/qiime/SILVA_128_QIIME_release/artifacts/silva128_99.qza"
 # SILVA 132: 
-ref_seqs="/data/db/qiime/SILVA_132_QIIME_release/QIIME2-artifacts/silva132_99.qza"
+ref_seqs="$coredir/db/silva132_99.qza"
 # GDP: ref_seqs="/data/db/qiime/GRD/artifacts/GRD_sequences.qza"
 # Reference taxonomy - current: Silva 0.99 full lenght tax
 # SILVA 128: ref_tax="/work/db/qiime/SILVA_128_QIIME_release/artifacts/silva128_99_taxonomy.qza"
 # SILVA 132: 
-ref_tax="/data/db/qiime/SILVA_132_QIIME_release/QIIME2-artifacts/silva132_99_taxonomy.qza"
+ref_tax="$coredir/db/silva132_99_taxonomy.qza"
 # GDP: ref_tax="/data/db/qiime/GRD/artifacts/GRD_taxonomy.qza"
 # Arquivo de sequências representativas e tabela
 rep_seqs="${testname}-rep-seqs-dada2.qza"
