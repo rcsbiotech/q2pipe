@@ -4,7 +4,7 @@
 
 # Directory to store analysis outputs
 testdir="./test/test01A"
-testname=`basename ./test/test38B | sed 's/test//'`
+testname=`basename ${testdir} | sed 's/test//'`
 
 # Directory to store qiime2 artifacts
 artdir="./artifacts"

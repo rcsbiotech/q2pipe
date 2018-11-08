@@ -34,8 +34,11 @@
 	# Creation of formatted biom table
 	# Analysis of this table on PICRUST
 
+## Resourcing parameters
+source ./intel/parameters.sh
+
 ## Creates PICRUSt outdir
-mkdir -p ${testdir}/picrust.${testname}
+#mkdir -p ${testdir}/picrust.${testname}
 
 echo "Starting closed-reference clusterization"
 
@@ -43,7 +46,7 @@ echo "Starting closed-reference clusterization"
 qiime vsearch cluster-features-closed-reference \
 	--i-sequences artifacts/${testname}-rep-seqs-dada2.qza \
 	--i-table artifacts/${testname}-table-dada2.qza \
-	--reference-sequences db/gg_13_5_otu_97.qza \
+	--i-reference-sequences db/gg_13_5_otu_97.qza \
 	--p-threads ${parameter_threads} \
 	--p-perc-identity 0.97 \
 	--verbose \
@@ -52,7 +55,7 @@ qiime vsearch cluster-features-closed-reference \
 ## Export the biom file
 qiime tools export \
 	--input-path ${testdir}/picrust.${testname}/clustered_table.qza \
-	--output-path ${testdir}/picrust.${testname}/feature-table.biom
+	--output-path ${testdir}/picrust.${testname}
 
 echo "Normalizing metagenomes by copy number"
 
