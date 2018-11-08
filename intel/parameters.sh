@@ -3,7 +3,7 @@
 # Variable declaration
 
 # Directory to store analysis outputs
-testdir="./test/test38B"
+testdir="./test/test01A"
 testname=`basename ./test/test38B | sed 's/test//'`
 
 # Directory to store qiime2 artifacts
@@ -16,13 +16,15 @@ inteldir="./intel"
 
 ## Pre-process the data with DADA?
 preproc="no"
+## If yes, annotate after preprocessing?
+annotate_after="no"
 
-	# If yes, pass the preprocessing parameters
-	trunc_f=280
-	trunc_r=220
-	trim_f=10
-	trim_r=10
-	max_ee=6
+# If yes, pass the preprocessing parameters
+trunc_f=280
+trunc_r=220
+trim_f=10
+trim_r=10
+max_ee=6
 
 
 # Diretório para a identidade da anotação

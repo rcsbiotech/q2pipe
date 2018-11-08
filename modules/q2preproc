@@ -87,5 +87,15 @@ echo "Pre-processing OK"
 echo
 echo "Now, starting core analysis..."
 
+
 ## Run annotation and analysis
-./q2pipe
+
+if [[ ${annotate_after} = "yes" ]]; then
+
+	echo
+	echo "Now, starting core analysis..."
+        echo "Starting annotation and downstream"
+        ./q2pipe
+
+fi
+
