@@ -11,7 +11,7 @@ Using QIIME2, runs a complete analysis from your data based on a range of optimi
 - [QIIME1 installed via conda](http://qiime.org/install/install.html), will be removed soon;
 - [QIIME2 installed via conda](https://docs.qiime2.org/2018.8/install/);
 - [BIOM format](http://biom-format.org/)
-- Databases: SILVA132 and Greengenes as artifacts, will upload any moment soon;
+- Databases: SILVA132 and Greengenes rep-sequences as artifacts.
 - [PICRUSt](http://picrust.github.io/picrust/install.html#install);
 
 ### What you must feed the pipeline
@@ -26,9 +26,10 @@ Using QIIME2, runs a complete analysis from your data based on a range of optimi
 1. Imports your data as a QIIME2 artifact;
 2. Denoise it using the DADA2 pipeline;
 3. Classifies your data using either BLAST or VSEARCH, against the latest Greengenes and SILVA database;
-4. Run core diversity and phylogeny analysis;
-5. (WIP) Predict the metagenomes with PICRUSt;
+4. Run core diversity and basic phylogenetic analysis based on QIIME2
+5. Predict the metagenomes with PICRUSt;
 6. Reports all results as HTML, plain text and a usable BIOM-taxonomy file.
+7. (WIP) Run our custom RScript pipeline with the main diversity indexes.
 
 ### Suggested workflow
 
@@ -40,7 +41,8 @@ WIP
 
 ## Currently in development
 
-DADA2 iterative pre-processing over a range of parameters
+- DADA2 iterative pre-processing over a range of parameters
+- RScript to run all analysis without having to input in another platform
 
 ## To be implemented
 

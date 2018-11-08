@@ -9,7 +9,7 @@ testname=`basename ./test/test38B | sed 's/test//'`
 # Directory to store qiime2 artifacts
 artdir="./artifacts"
 
-# Rleative path to intel directory
+# Relative path to intel directory
 inteldir="./intel"
 
 # Pre-processing

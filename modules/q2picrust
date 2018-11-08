@@ -1,0 +1,135 @@
+#!/bin/bash
+
+
+# BSD 2-Clause License
+#
+# Copyright (c) 2018, Rafael Correia da Silva
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# * Redistributions of source code must retain the above copyright notice, this
+# list of conditions and the following disclaimer.
+#
+# # * Redistributions in binary form must reproduce the above copyright notice,
+# this list of conditions and the following disclaimer in the documentation
+# and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+## After q2pipe, runs PICRUSt for the testname ID files.
+	# Steps:
+	# Classification with Greengenes 0.97
+	# Removal of Mitochondria and Chloroplast
+	# Creation of formatted biom table
+	# Analysis of this table on PICRUST
+
+## Creates PICRUSt outdir
+mkdir -p ${testdir}/picrust.${testname}
+
+echo "Starting closed-reference clusterization"
+
+## Picking OTUs at 97% similarity with Greengenes.qza as ref
+qiime vsearch cluster-features-closed-reference \
+	--i-sequences artifacts/${testname}-rep-seqs-dada2.qza \
+	--i-table artifacts/${testname}-table-dada2.qza \
+	--reference-sequences db/gg_13_5_otu_97.qza \
+	--p-threads ${parameter_threads} \
+	--p-perc-identity 0.97 \
+	--verbose \
+	--output-dir ${testdir}/picrust.${testname}
+
+## Export the biom file
+qiime tools export \
+	--input-path ${testdir}/picrust.${testname}/clustered_table.qza \
+	--output-path ${testdir}/picrust.${testname}/feature-table.biom
+
+echo "Normalizing metagenomes by copy number"
+
+# PICRUST STEPS
+## Normalize by copy number
+normalize_by_copy_number.py \
+	-i ${testdir}/picrust.${testname}/feature-table.biom \
+	-o ${testdir}/picrust.${testname}/normalized_otus.biom
+
+echo "Starting metagenome prediction for KEGG, COG and RFAM"
+echo
+
+## Predict metagenomes - KEGG
+predict_metagenomes.py \
+	-i ${testdir}/picrust.${testname}/normalized_otus.biom \
+	-o ${testdir}/picrust.${testname}/predicted_kegg.biom
+
+## Predict metagenomes - COG
+predict_metagenomes.py \
+	-i  ${testdir}/picrust.${testname}/normalized_otus.biom \
+	-o  ${testdir}/picrust.${testname}/predicted_cog.biom
+
+## Predict metagenomes - RFAM (already TSV output)
+predict_metagenomes.py \
+	-i  ${testdir}/picrust.${testname}/normalized_otus.biom \
+	-o  ${testdir}/picrust.${testname}/predicted_rfam.tsv
+
+
+## Sorting PICRUSt output by category - KEGG and COG
+
+echo "Starting KEGG categories..."
+echo
+
+### KEGG Categories
+for value in 1 2 3; do
+	
+	## KEGG categories by level, biom-output
+	categorize_by_function.py \
+		-i ${testdir}/picrust.${testname}/predicted_kegg.biom \
+		-o ${testdir}/picrust.${testname}/ko.level.${value}.biom \
+		-c KEGG_Pathways \
+		-l ${value}
+
+	## KEGG categories by level, tab-output
+	categorize_by_function.py \
+		-i ${testdir}/picrust.${testname}/predicted_kegg.biom \
+		-o ${testdir}/picrust.${testname}/ko.level.${value}.tsv \
+		-c KEGG_Pathways \
+		-l ${value} \
+		--format_tab_delimited
+
+done
+
+
+echo "Starting COG categories..."
+echo
+
+### COG categories
+for value in 1 2; do
+
+	## COG categories (2 levels), biom-format
+	categorize_by_function.py \
+		-i ${testdir}/picrust.${testname}/predicted_cog.biom \
+		-o ${testdir}/picrust.${testname}/cog.level.${value}.biom \
+		-c COG_Category \
+		-l ${value}
+
+	## COG categories (2 levels), tab-separated
+	categorize_by_function.py \
+		-i ${testdir}/picrust.${testname}/predicted_cog.biom \
+		-o ${testdir}/picrust.${testname}/cog.level.${value}.tsv \
+		-c COG_Category \
+		-l ${value} \
+		--format_tab_delimited
+
+echo "Finished functional/metagenome prediction"
+echo
+echo "Results at: ${testdir}/picrust.${testname}"
+
+
