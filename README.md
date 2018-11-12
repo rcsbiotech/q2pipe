@@ -1,9 +1,12 @@
 # q2pipe
 
-QIIME2 16S pipeline - WORK IN PROGRESS
+QIIME2 16S pipeline
 Implemented for QIIME2 2018.8
 
 Using QIIME2, runs a complete analysis from your data based on a range of optimizable parameters, such as trimming and truncate length, annotation identity, and cluster parameters.
+
+This is a work in progress, and i'm implementing features and user-friendliness as i go.
+Any questions or suggestions, you can easily reach me on the e-mail rc.silva@unesp.br, with the subject "q2pipe: your subject"
 
 ### What you must install before running:
 
@@ -29,7 +32,7 @@ Using QIIME2, runs a complete analysis from your data based on a range of optimi
 6. Reports all results as HTML, plain text and a usable BIOM-taxonomy file.
 7. (WIP) Run our custom RScript pipeline with the main diversity indexes.
 
-### Suggested workflow (WIP)
+### Suggested workflow
 
 1. Turn on your qiime2 (usually with `source activate qiime2-2018.8`)
 2. Create a manifest file, with the name manifest.csv, then put it inside the intel directory.
@@ -44,22 +47,27 @@ Using QIIME2, runs a complete analysis from your data based on a range of optimi
 
 ## Currently in development
 
-- DADA2 iterative pre-processing over a range of parameters
-- RScript to run all analysis without having to input in another platform
+- Add user friendly description and help messages
+- Error control for core pipeline (manifest, preproc, pipe and picrust)
+	- Missing parameters;
+	- Missing files;
+	- Missing databases;
 
-## To be implemented
+## Future projects
 
-1. Annotation with VSEARCH/BLAST over SILVA132 and the latest Greengenes
-2. Core diversity analysis with QIIME2 (OK)
-3. Merge-Denoise-Deblur optimized pipeline
-4. Automatic q2-feature-classifier
-5. Generate numerical ecology analysis based on metadata columns
+1. (done) Annotation with VSEARCH/BLAST over SILVA132 and the latest Greengenes
+2. (done) Core diversity analysis with QIIME2
+3. DADA2 over a range of paramaters (q2range)
+4. Merge-Denoise-Deblur optimized pipeline
+5. Automatic q2-feature-classifier
+6. Generate numerical ecology analysis based on metadata columns, on a custom RScript
+7. Implement the pipeline for ITS regions
 
 ---
 
 ## References
 
-1. The very own [QIIME](http://qiime.org/) and [QIIME2](https://qiime2.org/).
+1. [QIIME](http://qiime.org/) and [QIIME2](https://qiime2.org/).
 2. DADA2 sequence denoise pipeline: Callahan, B. J., McMurdie, P. J., Rosen, M. J., Han, A. W., Johnson, A. J. A., & Holmes, S. P. (2016). DADA2: high-resolution sample inference from Illumina amplicon data. Nature methods, 13(7), 581.
 3. VSEARCH for sequence clustering and feature classification: Rognes, T., Flouri, T., Nichols, B., Quince, C., & Mahé, F. (2016). VSEARCH: a versatile open source tool for metagenomics. PeerJ, 4, e2584.
 4. BLAST also used for feature classification: Camacho, C., Coulouris, G., Avagyan, V., Ma, N., Papadopoulos, J., Bealer, K., & Madden, T. L. (2009). BLAST+: architecture and applications. BMC bioinformatics, 10(1), 421. 
