@@ -30,6 +30,8 @@
 ## Get parameters
 source intel/parameters.txt
 
+## Creating directories
+mkdir -p html output test
 
 ## Run DADA2 Pre-processing on demux.qza artifact
 if [[ ${preproc} = "yes" ]]; then

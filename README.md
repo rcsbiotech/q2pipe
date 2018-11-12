@@ -40,7 +40,7 @@ Using QIIME2, runs a complete analysis from your data based on a range of optimi
 
 ### Current schema
 
-![Q2pipe-schema-09-10](https://drive.google.com/a/unesp.br/uc?id=1XZGomZGv8TB4KruqEAJLdPNe2L1hJn1O)
+![Q2pipe-schema-11-12](https://drive.google.com/a/unesp.br/uc?id=1_J7u4ZNDPtEtyqCU_YjHuONbVu0JnkdK)
 
 ## Currently in development
 
