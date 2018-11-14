@@ -75,11 +75,13 @@ predict_metagenomes.py \
 
 ## Predict metagenomes - COG
 predict_metagenomes.py \
+	-t cog \
 	-i  ${testdir}/picrust.${testname}/normalized_otus.biom \
 	-o  ${testdir}/picrust.${testname}/predicted_cog.biom
 
 ## Predict metagenomes - RFAM (BIOM format only)
 predict_metagenomes.py \
+	-t rfam \
 	-i  ${testdir}/picrust.${testname}/normalized_otus.biom \
 	-o  ${testdir}/picrust.${testname}/predicted_rfam.biom
 

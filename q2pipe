@@ -38,6 +38,7 @@ source intel/parameters.txt
 mkdir -p ${testdir}
 mkdir -p ${testdir}/rarefied
 mkdir -p ${testdir}/unrare
+mkdir -p ${testdir}/useful
 
 ## Limpa o log, cria novamente
 rm -f ${testdir}/run_report
@@ -46,6 +47,10 @@ touch ${testdir}/run_report
 ## [.. Clusterização de novo ..] ##
 ## Roda a clusterização de novo caso tenha solicitado ##
 if [[ ${denovo} = "yes" ]]; then
+
+	echo "Beginning de novo clusterization..."
+	echo
+
 	if [ ! -f ${seqsdir}/${table_seqs} ]; then
 	
 		mkdir -p ${seqsdir}
@@ -60,6 +65,8 @@ if [[ ${denovo} = "yes" ]]; then
 			--o-clustered-sequences ${seqsdir}/${rep_seqs} \
 			--o-new-reference-sequences ${seqsdir}/${testname}.new_refs.qza \
 			--verbose
+
+		echo "Writing de novo cluster changes..."
 	fi
 else
 		
@@ -68,13 +75,16 @@ else
 	# será a mesma em que se encontram os artefatos gerados pelo
 	# pré-processamento
 	seqsdir=`echo ${artdir}`
+
 							
 fi
 
-	## Classificação - se taxonomy.qza não existir
+	## Classifies if taxonomy.qza doesnt exist
 
 if [ ! -f ${testdir}/taxonomy.qza ]; then
+
 ## Opção: VSEARCH
+
 	if [[ $annotator = "vsearch" ]]; then
 		
 	qiime feature-classifier classify-consensus-vsearch \
@@ -86,8 +96,10 @@ if [ ! -f ${testdir}/taxonomy.qza ]; then
 		--o-classification ${testdir}/taxonomy.qza \
 	    	--verbose 
 	fi
+
 				
-	## Opção: BLAST
+## Opção: BLAST
+
 	if [[ $annotator = "blast" ]]; then
 	
 qiime feature-classifier classify-consensus-blast \
@@ -97,35 +109,77 @@ qiime feature-classifier classify-consensus-blast \
 	--p-perc-identity ${parameter_identity} \
 	--o-classification ${testdir}/taxonomy.qza \
        	--verbose
+
 	fi
+
 fi
+
 														    
-# 3. Filtro dos indesejáveis - blast
-## Filtrar cloroplastos e mitocôndrias
+# 3. Filtering chloroplasts and mitochondria
+
 qiime taxa filter-table \
 	--i-table ${seqsdir}/${table_seqs} \
 	--i-taxonomy ${testdir}/taxonomy.qza \
 	--p-exclude Mitochondria,Chloroplast \
 	--o-filtered-table ${testdir}/pure-table.qza
+
         
 # 4. Saída: arquivo BIOM não rarefeito
+
 qiime tools export \
 	--input-path ${testdir}/pure-table.qza \
 	--output-path ${testdir}/unrare
 
+
 # Exportar a referência de taxonomia
+
 qiime tools export \
 	--input-path ${testdir}/taxonomy.qza \
 	--output-path ${testdir}
+
+if [[ ${choosen_database} = "SILVA" ]]; then
+
+        ## Fixa o cabeçalho da OTU Table
+        cp ${testdir}/taxonomy.tsv ${testdir}/useful/taxonomy-no-headers.tsv
+        cat ${testdir}/taxonomy.tsv | sed 1d > /tmp/taxtemp.tsv
+
+        echo
+        echo "Formatting SILVA taxonomy table to Microbiome Analyst..."
+        echo
+
+        # Remove os delimitadores do banco de dados SILVA (D_{0|1|2|3})
+        # Deixando-os limpos para downstream (HCRP)
+
+        cp ${testdir}/taxtemp.tsv ${testdir}/format.tsv && \
+                sed 's/D_0__//' ./format.tsv | \
+                sed 's/D_1__//' | \
+                sed 's/D_2__//' | \
+                sed 's/D_3__//' | \
+                sed 's/D_4__//' | \
+                sed 's/D_5__//' | \
+                sed 's/D_6__//' | \
+                sed 's/;/; /g'  | \
+                sed -i '1 i\#OTUID\ttaxonomy\tconfidence' ${testdir}/taxonomy3.tsv && \
+                mv ${testdir}/taxonomy3.tsv ${testdir}/formatted.tsv && \
+                rm ${testdir}/format.tsv &&
+                rm ${testdir}/taxonomy3.tsv
+
+        # Cria uma cópia no useful, e outra para continuar a análise
+        cp ${testdir}/formatted.tsv ${testdir}/useful/taxonomy-downstream.tsv
+        mv ${testdir}/formatted.tsv ${testdir}/taxonomy.tsv
+
+else
 	
-## Fixa o cabeçalho da OTU Table
-cat ${testdir}/taxonomy.tsv | sed 1d > /tmp/taxtemp.tsv
-sed -i '1 i\#OTUID\ttaxonomy\tconfidence' /tmp/taxtemp.tsv
-rm ${testdir}/taxonomy.tsv
-mv /tmp/taxtemp.tsv ${testdir}/taxonomy.tsv
-head ${testdir}/taxonomy.tsv
+	## Fixa o cabeçalho da OTU Table para qualquer outro banco
+	cat ${testdir}/taxonomy.tsv | sed 1d > /tmp/taxtemp.tsv
+	sed -i '1 i\#OTUID\ttaxonomy\tconfidence' /tmp/taxtemp.tsv
+	rm ${testdir}/taxonomy.tsv
+	mv /tmp/taxtemp.tsv ${testdir}/taxonomy.tsv
+	head ${testdir}/taxonomy.tsv
+fi
 
 ## Sumarizando o experimento - contagens
+
 qiime feature-table summarize \
 	    --i-table ${testdir}/pure-table.qza \
 	    --o-visualization ${testdir}/pure-table.qzv \
@@ -137,6 +191,7 @@ qiime tools export \
 	--output-path ${testdir}/pure-table-html
 	
 # Obtendo o valor de rarefação
+
 rarevalue=`tail -1 ${testdir}/pure-table-html/sample-frequency-detail.csv | sed 's/.*,//' | sed 's/\..//'`
 tail -15 ${testdir}/pure-table-html/sample-frequency-detail.csv
 echo "Rarefaction is: ${rarevalue}"
