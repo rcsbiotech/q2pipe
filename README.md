@@ -1,6 +1,6 @@
 # q2pipe
 
-QIIME2 16S pipeline
+QIIME2 16S wrapper
 Implemented for QIIME2 2018.8
 
 Using QIIME2, runs a complete analysis from your data based on a range of optimizable parameters, such as trimming and truncate length, annotation identity, and cluster parameters.
@@ -15,14 +15,14 @@ Any questions or suggestions, you can easily reach me on the e-mail rc.silva@une
 - [BIOM format](http://biom-format.org/) for data wrangling;
 - [PICRUSt](http://picrust.github.io/picrust/install.html#install) metagenome predictor;
 
-### What you must feed the pipeline
+### What you must feed the program
 
 - Analysis parameters, such as name, trimming and truncation values, max. expected errors, which algorithm to use for annotation, and such.
 - [A manifest text file for data](https://docs.qiime2.org/2018.8/tutorials/importing/?highlight=manifest#fastq-manifest-formats);
 - [A sample metadata text file](https://docs.qiime2.org/2018.8/tutorials/moving-pictures/?highlight=metadata#sample-metadata);
 - Your paired-end sequences.
 
-### What does the pipeline do
+### What does the wrapper do
 
 1. Imports your data as a QIIME2 artifact;
 2. Denoise it using the DADA2 pipeline;
@@ -30,7 +30,7 @@ Any questions or suggestions, you can easily reach me on the e-mail rc.silva@une
 4. Run core diversity and basic phylogenetic analysis based on QIIME2
 5. Predict the metagenomes with PICRUSt;
 6. Reports all results as HTML, plain text and a usable BIOM-taxonomy file.
-7. (WIP) Run our custom RScript pipeline with the main diversity indexes.
+7. (WIP) Run our custom RScript with the main diversity indexes.
 
 ### Suggested workflow
 
@@ -48,7 +48,7 @@ Any questions or suggestions, you can easily reach me on the e-mail rc.silva@une
 ## Currently in development
 
 - Add user friendly description and help messages
-- Error control for core pipeline (manifest, preproc, pipe and picrust)
+- Error control for core wrapper (manifest, preproc, pipe and picrust)
 	- Missing parameters;
 	- Missing files;
 	- Missing databases;
@@ -58,10 +58,10 @@ Any questions or suggestions, you can easily reach me on the e-mail rc.silva@une
 1. (done) Annotation with VSEARCH/BLAST over SILVA132 and the latest Greengenes
 2. (done) Core diversity analysis with QIIME2
 3. DADA2 over a range of paramaters (q2range)
-4. Merge-Denoise-Deblur optimized pipeline
+4. Merge-Denoise-Deblur optimized preprocess pipeline;
 5. Automatic q2-feature-classifier
 6. Generate numerical ecology analysis based on metadata columns, on a custom RScript
-7. Implement the pipeline for ITS regions
+7. Implement for ITS regions
 
 ---
 
