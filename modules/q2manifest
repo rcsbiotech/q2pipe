@@ -37,11 +37,23 @@ mkdir -p artifacts test html output
 echo "Importing your sequences from manifest file..."
 
 if [[ ${paired_seqs} = "yes" ]]; then
+
+	qiime tools import \
 	--type 'SampleData[PairedEndSequencesWithQuality]' \
 	--input-path ./intel/manifest.csv \
 	--output-path ./artifacts/demux.qza \
-	--source-format PairedEndFastqManifestPhred33
+	--input-format PairedEndFastqManifestPhred33
 fi
+
+echo "Generating visualization..."
+
+if [[ ! -f ./output/demux.qzv ]]; then
+
+	qiime demux summarize \
+		--i-data ./artifacts/demux.qza \
+		--o-visualization ./output/demux.qzv
+fi
+
 
 echo
 echo "Finished importing sequences..."

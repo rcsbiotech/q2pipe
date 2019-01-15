@@ -37,12 +37,12 @@ mkdir -p html output test
 if [[ ${preproc} = "yes" ]]; then
 	
 	qiime dada2 denoise-paired \
-		--i-demultiplexed-seqs artifact/demux.qza \
+		--i-demultiplexed-seqs artifacts/demux.qza \
 		--p-trunc-len-f ${trunc_f} \
 		--p-trunc-len-r ${trunc_r} \
 		--p-trim-left-f ${trim_f} \
 		--p-trim-left-r ${trim_r} \
-		--p-n-threads ${threads} \
+		--p-n-threads ${parameter_threads} \
 		--p-max-ee ${max_ee} \
 		--verbose \
 		--o-representative-sequences artifacts/${testname}-rep-seqs-dada2.qza \
