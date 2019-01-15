@@ -53,21 +53,22 @@ Any questions or suggestions, you can easily reach me on the e-mail rc.silva@une
 	- Missing files;
 	- Missing databases;
 
-## Future projects
+## Roadmap
 
-1. (done) Annotation with VSEARCH/BLAST over SILVA132 and the latest Greengenes
-2. (done) Core diversity analysis with QIIME2
-3. DADA2 over a range of paramaters (q2range)
-4. Merge-Denoise-Deblur optimized preprocess pipeline;
-5. Automatic q2-feature-classifier
-6. Generate numerical ecology analysis based on metadata columns, on a custom RScript
-7. Implement for ITS regions
+1. (done) Annotation with VSEARCH/BLAST over SILVA132 and the latest Greengenes.
+2. (done) Core diversity analysis with QIIME2.
+3. (WIP) Update to QIIME-2011-11.
+4. Implement shi7 to test over parameters.
+5. Merge-Denoise-Deblur optimized preprocess pipeline.
+6. Automatic q2-feature-classifier.
+7. Generate numerical ecology analysis based on metadata columns, on a custom RScript.
+8. Implement for ITS regions.
 
 ---
 
 ## References
 
-1. [QIIME](http://qiime.org/) and [QIIME2](https://qiime2.org/).
+1. [QIIME2](https://qiime2.org/).
 2. DADA2 sequence denoise pipeline: Callahan, B. J., McMurdie, P. J., Rosen, M. J., Han, A. W., Johnson, A. J. A., & Holmes, S. P. (2016). DADA2: high-resolution sample inference from Illumina amplicon data. Nature methods, 13(7), 581.
 3. VSEARCH for sequence clustering and feature classification: Rognes, T., Flouri, T., Nichols, B., Quince, C., & Mahé, F. (2016). VSEARCH: a versatile open source tool for metagenomics. PeerJ, 4, e2584.
 4. BLAST also used for feature classification: Camacho, C., Coulouris, G., Avagyan, V., Ma, N., Papadopoulos, J., Bealer, K., & Madden, T. L. (2009). BLAST+: architecture and applications. BMC bioinformatics, 10(1), 421. 
