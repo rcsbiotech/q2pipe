@@ -33,8 +33,25 @@ source intel/parameters.txt
 ## Creating directories
 mkdir -p html output test
 
+## Get starting date
+DATE=`date '+%Y-%m-%d %H:%M:%S'`
+
+echo "Adding info to masterlog...."
+
+echo >> ./test/masterlog
+echo "[............ Preprocessing of ${testname} ...........]" >> ./test/masterlog
+echo "[trunc_f: ${trunc_f}..................................]" >> ./test/masterlog
+echo "[trunc_r: ${trunc_r}..................................]" >> ./test/masterlog
+echo "[trim_f: ${trim_f}..................................]" >> ./test/masterlog
+echo "[trim_r: ${trim_r}..................................]" >> ./test/masterlog
+echo "[max_ee: ${max_ee}..................................]" >> ./test/masterlog
+echo "[Started at: $DATE]" >> ./test/masterlog
+
+echo >> ./test/masterlog
+
+
 ## Run DADA2 Pre-processing on demux.qza artifact
-if [[ ${preproc} = "yes" ]]; then
+if [[ ${preproc} = "yes" && ! -f ./artifacts/${testname}-table-dada2.qza ]]; then
 	
 	qiime dada2 denoise-paired \
 		--i-demultiplexed-seqs artifacts/demux.qza \
@@ -76,8 +93,7 @@ qiime feature-table tabulate-seqs \
 ### Again, export as HTML
 qiime tools export \
 	--input-path html/${testname}-rep-seqs-dada2.qzv \
-	--outputh-path output/${testname}-rep-seqs
-
+	--output-path output/${testname}-rep-seqs
 
 ### Exporting pre-processing stats
 # Starting reads, denoised reads, surviving reads as TSV
@@ -90,8 +106,11 @@ echo
 echo "Now, starting core analysis..."
 
 
-## Run annotation and analysis
+# Log ending time
+echo "[Finished at: $DATE]" >> ./test/masterlog
 
+
+## Run annotation and analysis
 if [[ ${annotate_after} = "yes" ]]; then
 
 	echo

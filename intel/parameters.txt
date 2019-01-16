@@ -1,13 +1,12 @@
 # QIIME2 pipeline variables
 
-# Variable declaration
-
-# Sequencias paired?
+# Paired-end sequences?
 paired_seqs='yes'
 
 # Directory to store analysis outputs
 coredir=`echo $PWD`
-testdir="./test/02A"
+
+testdir="./test/03A"
 testname=`basename ${testdir} | sed 's/test//'`
 
 # Directory to store qiime2 artifacts
@@ -22,11 +21,11 @@ inteldir="./intel"
 preproc="yes"
 
 # If yes, pass the preprocessing parameters
-trunc_f=230
-trunc_r=210
+trunc_f=240
+trunc_r=220
 trim_f=00
 trim_r=00
-max_ee=8
+max_ee=4
 
 
 # Identidade da anotação (%)
@@ -71,10 +70,13 @@ table_seqs="${testname}-table-dada2.qza"
 run_diversity="yes"
 
 # Gerar com cloroplasto e mitocondrias?
-run_corrupt="no"
+run_corrupt="yes"
 
 # Cria a variável "Nome da análise"
 testname=`echo ${testdir} | sed 's/\.\/test\///'`
+
+# Metadata columns
+col_01=`cut -s -f2 intel/metadata.tsv | sed -n 1p`
 
 ## Fim da declaração de variáveis
 
