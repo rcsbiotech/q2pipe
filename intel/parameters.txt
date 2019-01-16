@@ -7,7 +7,7 @@ paired_seqs='yes'
 
 # Directory to store analysis outputs
 coredir=`echo $PWD`
-testdir="./test/01A"
+testdir="./test/02A"
 testname=`basename ${testdir} | sed 's/test//'`
 
 # Directory to store qiime2 artifacts
@@ -20,15 +20,13 @@ inteldir="./intel"
 
 ## Pre-process the data with DADA?
 preproc="yes"
-## If yes, annotate after preprocessing?
-annotate_after="no"
 
 # If yes, pass the preprocessing parameters
-trunc_f=240
-trunc_r=220
+trunc_f=230
+trunc_r=210
 trim_f=00
 trim_r=00
-max_ee=6
+max_ee=8
 
 
 # Identidade da anotação (%)

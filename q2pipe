@@ -174,6 +174,12 @@ echo "Fixing OTU table headers (SILVA database)"
         cp ${testdir}/taxonomy.tsv ${testdir}/useful/taxonomy-no-headers.tsv
         cat ${testdir}/taxonomy.tsv | sed 1d > ${testdir}/taxtemp.tsv
 
+	if [[ ! -f ${testdir}/taxtemp.tsv ]]; then
+		echo "Taxonomy not converted. Aborting..."
+		exit
+	fi
+
+
         echo
         echo "Formatting SILVA taxonomy table to Microbiome Analyst..."
         echo
@@ -181,22 +187,25 @@ echo "Fixing OTU table headers (SILVA database)"
         # Remove os delimitadores do banco de dados SILVA (D_{0|1|2|3})
         # Deixando-os limpos para downstream (HCRP)
 
-                sed 's/D_0__//' ${testdir}/taxtemp.tsv | \
+	# Part I: fixing taxa prefixes...
+
+                cat ${testdir}/taxtemp.tsv | sed 's/D_0__//' | \
                 sed 's/D_1__//' | \
                 sed 's/D_2__//' | \
                 sed 's/D_3__//' | \
                 sed 's/D_4__//' | \
                 sed 's/D_5__//' | \
-                sed 's/D_6__//' | \
-                sed 's/;/; /g'  | \
-                sed -i '1 i\#OTUID\ttaxonomy\tconfidence'
+                sed 's/D_6__//' | sed 's/;/; /g' > ${testdir}/taxtemp.tsv
 
+	# Part II: fixing header...
+
+                sed -i '1 i\#OTUID\ttaxonomy\tconfidence' ${testdir}/taxtemp.tsv
                 mv ${testdir}/taxtemp.tsv ${testdir}/formatted.tsv
 
         # Cria uma cópia no useful, e outra para continuar a análise
         cp ${testdir}/formatted.tsv ${testdir}/useful/taxonomy-downstream.tsv
         mv ${testdir}/formatted.tsv ${testdir}/taxonomy.tsv
-	rm ${testdir}/taxtemp.tsv
+#	rm ${testdir}/taxtemp.tsv
 
 else
 	echo "Fixing taxonomy table headers (other databases)"
