@@ -7,7 +7,7 @@ paired_seqs='yes'
 
 # Directory to store analysis outputs
 coredir=`echo $PWD`
-testdir="./test/test01A"
+testdir="./test/01A"
 testname=`basename ${testdir} | sed 's/test//'`
 
 # Directory to store qiime2 artifacts
@@ -35,7 +35,8 @@ max_ee=6
 parameter_identity=0.97
 
 # Número de processadores a serem utilizados na análise
-parameter_threads=15
+parameter_threads=35
+threads=35
 
 # Opções de anotador: vsearch | blast
 annotator="vsearch"
