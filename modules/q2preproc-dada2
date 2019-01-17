@@ -107,6 +107,8 @@ echo "Now, starting core analysis..."
 
 
 # Log ending time
+unset DATE
+DATE=`date '+%Y-%m-%d %H:%M:%S'`
 echo "[Finished at: $DATE]" >> ./test/masterlog
 
 

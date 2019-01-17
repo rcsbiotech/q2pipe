@@ -6,7 +6,12 @@ paired_seqs='yes'
 # Directory to store analysis outputs
 coredir=`echo $PWD`
 
-testdir="./test/05A"
+# Use which preproc file?
+preproc="yes"
+preprocname="07A"
+
+# Test name?
+testdir="./test/07A"
 testname=`basename ${testdir} | sed 's/test//'`
 
 # Directory to store qiime2 artifacts
@@ -16,16 +21,12 @@ artdir="./artifacts"
 inteldir="./intel"
 
 # Pre-processing
-
-## Pre-process the data with DADA?
-preproc="yes"
-
 # If yes, pass the preprocessing parameters
 trunc_f=240
 trunc_r=230
 trim_f=00
 trim_r=00
-max_ee=10
+max_ee=04
 
 
 # Identidade da anotação (%)
@@ -36,7 +37,7 @@ parameter_threads=35
 threads=35
 
 # Opções de anotador: vsearch | blast
-annotator="vsearch"
+annotator="blast"
 
 # Banco de dados escolhido ("SILVA" | "Greengenes" | "Other")
 choosen_database="SILVA"
@@ -63,8 +64,8 @@ ref_tax="$coredir/db/silva132_99_taxonomy.qza"
 # GDP: ref_tax="/data/db/qiime/GRD/artifacts/GRD_taxonomy.qza"
 
 # Arquivo de sequências representativas e tabela
-rep_seqs="${testname}-rep-seqs-dada2.qza"
-table_seqs="${testname}-table-dada2.qza"
+rep_seqs="${preprocname}-rep-seqs-dada2.qza"
+table_seqs="${preprocname}-table-dada2.qza"
 
 # Correr a diversidade?
 run_diversity="yes"
@@ -79,4 +80,3 @@ testname=`echo ${testdir} | sed 's/\.\/test\///'`
 col_01=`cut -s -f2 intel/metadata.tsv | sed -n 1p`
 
 ## Fim da declaração de variáveis
-
