@@ -6,7 +6,7 @@ paired_seqs='yes'
 # Directory to store analysis outputs
 coredir=`echo $PWD`
 
-testdir="./test/03A"
+testdir="./test/05A"
 testname=`basename ${testdir} | sed 's/test//'`
 
 # Directory to store qiime2 artifacts
@@ -22,10 +22,10 @@ preproc="yes"
 
 # If yes, pass the preprocessing parameters
 trunc_f=240
-trunc_r=220
+trunc_r=230
 trim_f=00
 trim_r=00
-max_ee=4
+max_ee=10
 
 
 # Identidade da anotação (%)

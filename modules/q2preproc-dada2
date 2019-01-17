@@ -39,12 +39,12 @@ DATE=`date '+%Y-%m-%d %H:%M:%S'`
 echo "Adding info to masterlog...."
 
 echo >> ./test/masterlog
-echo "[............ Preprocessing of ${testname} ...........]" >> ./test/masterlog
+echo "[............ Preprocessing of ${testname}. ...........]" >> ./test/masterlog
 echo "[trunc_f: ${trunc_f}..................................]" >> ./test/masterlog
 echo "[trunc_r: ${trunc_r}..................................]" >> ./test/masterlog
-echo "[trim_f: ${trim_f}..................................]" >> ./test/masterlog
-echo "[trim_r: ${trim_r}..................................]" >> ./test/masterlog
-echo "[max_ee: ${max_ee}..................................]" >> ./test/masterlog
+echo "[trim_f: ${trim_f}....................................]" >> ./test/masterlog
+echo "[trim_r: ${trim_r}....................................]" >> ./test/masterlog
+echo "[max_ee: ${max_ee}....................................]" >> ./test/masterlog
 echo "[Started at: $DATE]" >> ./test/masterlog
 
 echo >> ./test/masterlog
@@ -99,7 +99,7 @@ qiime tools export \
 # Starting reads, denoised reads, surviving reads as TSV
 qiime tools export \
 	--input-path artifacts/${testname}-stats-dada2.qza \
-	--output-path output/${testname}-preproc-stats.tsv
+	--output-path output/${testname}-preproc-stats
 
 echo "Pre-processing OK"
 echo

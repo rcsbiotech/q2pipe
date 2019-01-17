@@ -165,13 +165,13 @@ qiime tools export \
 	--input-path ${testdir}/taxonomy.qza \
 	--output-path ${testdir}
 
-
-if [[ ${choosen_database} = "SILVA" ]]; then
+## Checa se o arquivo existe e não está vazio
+if [[ ${choosen_database} = "SILVA" && -s ${testdir}/taxonomy.tsv ]]; then
 
 echo "Fixing OTU table headers (SILVA database)"
 
         ## Fixa o cabeçalho da OTU Table
-        cp ${testdir}/taxonomy.tsv ${testdir}/useful/taxonomy-no-headers.tsv
+        cp ${testdir}/taxonomy.tsv ${testdir}/useful/taxonomy-SILVA-headers.tsv
         cat ${testdir}/taxonomy.tsv | sed 1d > ${testdir}/taxtemp.tsv
 
 	if [[ ! -f ${testdir}/taxtemp.tsv ]]; then
@@ -204,10 +204,13 @@ echo "Fixing OTU table headers (SILVA database)"
 
         # Cria uma cópia no useful, e outra para continuar a análise
         cp ${testdir}/formatted.tsv ${testdir}/useful/taxonomy-downstream.tsv
-        mv ${testdir}/formatted.tsv ${testdir}/taxonomy.tsv
-#	rm ${testdir}/taxtemp.tsv
+        cp -r ${testdir}/formatted.tsv ${testdir}/taxonomy.tsv
+	mv ${testdir}/formatted.tsv ${testdir}/useful/
 
-else
+fi
+
+if [[ ! ${choosen_database} = "SILVA" && -s ${testdir}/taxonomy.tsv ]]; then
+
 	echo "Fixing taxonomy table headers (other databases)"
 	## Fixa o cabeçalho da OTU Table para qualquer outro banco
 	cat ${testdir}/taxonomy.tsv | sed 1d > /tmp/taxtemp.tsv
@@ -431,7 +434,7 @@ else
 fi
 
 # 7. Miscellaneous run information
-echo "Run name: $testname" >> ${testdir}/run_report"
+echo "Run name: $testname" >> ${testdir}/run_report
 
 # Zip results
 tar -zvcf output/"results.$testname.tar.gz" ${testdir}/rarefied ${testdir}/unrare ${testdir}/pure-table-html ${testdir}/core-metrics-results ${testdir}/alpha-rarefaction ${testdir}/run_report #${testdir}/corrupt
