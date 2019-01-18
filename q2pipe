@@ -84,7 +84,7 @@ fi
 
 	## Classifies if taxonomy.qza doesnt exist
 
-if [ ! -f ${testdir}/taxonomy.qza ]; then
+if [ ! -f ${testdir}/taxonomy.qza && ! -f ${testdir}/inputs/taxonomy.qza ]; then
 
 ## Opção: VSEARCH
 
@@ -131,6 +131,10 @@ if [ ! -f ${testdir}/taxonomy.qza ]; then
 
 else
 	echo "Taxonomy file already exists for ${testdir}, skipping..."
+	echo "Copying back taxonomy to test directory."
+	cp ${testdir}/inputs/taxonomy.qza ${testdir}/taxonomy.qza
+	echo
+
 
 fi
 
@@ -391,51 +395,77 @@ if [[ ${run_corrupt} = "yes" ]]; then
 
 fi
 
+
+## Add metadata to BIOM files
+
+### 1. Without chloroplasts and mitochondria
+### full.biom: biom table with: OTU hash IDs, taxonomy and sample metadata
+### this full biom file is all that's needed for downstream in R
+
+echo
+echo "Adding metadata to BIOM file..."
+biom add-metadata \\
+	-i ${testdir}/unrare/tabletax-unrare.biom \\
+	-o ${testdir}/unrare/full.biom \\
+	--sample-metadata-fp ${coredir}/intel/metadata.tsv
+
 # # # # # [. LOG SECTION .] # # # # # # # # #
+echo "Metadata added successfully"
+echo
 
 # Reporting metrics
 
 # 0. Parameters report:
-echo "Parameters for this run were: " >> ${testdir}/run_report
-echo "Did this run clusterized open reference? $denovo" >> ${testdir}/run_report
-echo "What was the annotation program? $annotator" >> ${testdir}/run_report
-echo "What was the identity (%) for annotation? $parameter_identity" >> ${testdir}/run_report
+echo "Parameters for this run were: " | tee -a ${testdir}/run_report
+echo "Did this run clusterized open reference? $denovo" | tee -a ${testdir}/run_report
+echo "What was the annotation program? $annotator" | tee -a ${testdir}/run_report
+echo "What was the identity (%) for annotation? $parameter_identity" | tee -a ${testdir}/run_report
 
 echo >> ${testdir}/run_report
 
 # 1. OTU number
 otu_lines=`wc ${testdir}/rarefied/otu_table.txt -l | sed 's/ .*//'`
 otu_no_headers=`expr "$otu_lines" - 1`
-echo "| -------- Core information for analysis ---------- |" >> ${testdir}/run_report
-echo "Number of OTUs is: $otu_no_headers" >> ${testdir}/run_report
+echo "| -------- Core information for analysis ---------- |" | tee -a ${testdir}/run_report
+echo "Number of OTUs is: $otu_no_headers" | tee -a ${testdir}/run_report
 
 # 2. Unique genera
 genera_lines=`wc ${testdir}/rarefied/tabulated/tabletax-rare_L6.txt -l | sed 's/ .*//'`
 genera_no_headers=`expr "$genera_lines" - 1`
-echo "Unique genera for analysis: $genera_no_headers" >> ${testdir}/run_report
+echo "Unique genera for analysis: $genera_no_headers" | tee -a ${testdir}/run_report
 
 # 3. Unique "Others"
 unique_others=`grep "\;Other" ${testdir}/rarefied/tabulated/tabletax-rare_L6.txt | wc -l`
-echo "OTUs not classified up to Genus (Other) were: ${unique_others}." >> ${testdir}/run_report
+echo "OTUs not classified up to Genus (Other) were: ${unique_others}." | tee -a ${testdir}/run_report
 
 # 4. Number of Phylla
 phylla_lines=`wc ${testdir}/rarefied/tabulated/tabletax-rare_L2.txt -l | sed 's/ .*//'`
 phylla_no_headers=`expr "$phylla_lines" - 1`
-echo "Unique phylla for analysis: $phylla_no_headers" >> ${testdir}/run_report
+echo "Unique phylla for analysis: $phylla_no_headers" | tee -a ${testdir}/run_report
 
 # 5. Rarefaction value
-echo "The rarefaction value was: $rarevalue" >> ${testdir}/run_report
+echo "The rarefaction value was: $rarevalue" | tee -a ${testdir}/run_report
 
 # 6. Were there Archaea?
 if grep -q "Archaea" ${testdir}/rarefied/tabulated/tabletax-rare_L2.txt; then
-	echo "Archaea were found in the analysis." >> ${testdir}/run_report
+	echo "Archaea were found in the analysis." | tee -a ${testdir}/run_report
 else
-	echo "Archaea were not found in the analysis." >> ${testdir}/run_report
+	echo "Archaea were not found in the analysis." | tee -a ${testdir}/run_report
 fi
 
 # 7. Miscellaneous run information
-echo "Run name: $testname" >> ${testdir}/run_report
+echo "Run name: $testname" | tee -a ${testdir}/run_report
+
+# Move outputs accordingly -> to inputs, and to diversity
+mkdir -p ${testdir}/diversity ${testdir}/inputs
+mv -vu ${testdir}/alpha-rarefaction* ${testdir}/core-metrics-results ${testdir}/diversity
+mv -vu ${testdir}/corrupt ${testdir}/pure-table* ${testdir}/rarefied ${testdir}/taxonomy* ${testdir}/unrare* ${testdir}/useful ${testdir}/inputs
 
 # Zip results
-tar -zvcf output/"results.$testname.tar.gz" ${testdir}/rarefied ${testdir}/unrare ${testdir}/pure-table-html ${testdir}/core-metrics-results ${testdir}/alpha-rarefaction ${testdir}/run_report #${testdir}/corrupt
+echo
+echo "Zipping final outputs..."
+tar -zcf output/"results.$testname.tar.gz" ${testdir}/inputs ${testdir}/diversity ${testdir}/run_report
+echo "Pipeline completed."
+echo
+echo
 
