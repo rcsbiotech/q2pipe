@@ -2,7 +2,7 @@
 
 # Paired or single end sequences? Answer 'yes' on only one?
 paired_seqs='yes' 	# { yes | no }
-single_seqs		# { yes | no }
+single_seqs='no'	# { yes | no }
 
 # Pre-processing
 # If yes, pass the preprocessing parameters
@@ -39,9 +39,12 @@ annotator="blast"
 
 # Banco de dados escolhido ("SILVA" | "Greengenes" | "Other")
 choosen_database="SILVA"
+
 # Directory to store analysis outputs
 coredir=`echo $PWD`	# DO NOT CHANGE THIS!
 			# Tells q2pipe to run it all on its own dir
+
+pylib='${coredir}/modules/python'
 
 # Start preprocessing on demux.qza using this parameters?
 preproc="yes"		# { yes | no }

@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+
+## Full USEARCH pipe, 3-step
+
+### Paired end pipeline
+## 1. -fastx_info: Expected error distribution:
+## 2. -fastq_eestats: Scan for errors, sequence quality
+## 3. -search_oligodb: Find primers on sequences
+## -- STOP: Human analysis for parameters --
+## Parameters to pick:
+## - Expected errors value
+## - Trunc. length
+
+## 4. -fastq_meregpairs: merge paired end sequences and samples
+## 5. -fastx_truncate: remove oligos and bad quality ends
+## 6. -orient: orient reads according to database
+## 7. -fastq_filter: remove low quality sequences
+## 8. -fastx_uniques: derreplicate samples
+## 9. -sortbysize: remove singletons
+## 10. Cluster OTUs and zOTUs
+## 11. Create OTU tables
+## 12. SINTAX taxonomy
+## -- STOP: Human analysis for parameters
+
+echo
+echo "WARNING WARNING WARNING WARNING"
+echo "TEST VERSION. NOT IMPLEMENTED YET."
+echo
+
+## Captures parameters
+source ./intel/parameters.txt
+. ./modules/usearch/ufuncs.sh --source-only
+
+## Creates needed directories
+mkdir -p ./test/${testname}/usearch/{analysis,data,outputs}
+udata_dir="./test/${testname}/usearch/data"
+uanal_dir="./test/${testname}/usearch/analysis"
+uout_dir="./test/${testname}/usearch/outputs"
+raw_dir="${coredir}/raw"
+
+## Sees if usearch81 and usearch11 are ready
+: <<'TESTS'
+### Usearch11
+if [ -f ./modules/usearch/usearch11 ]; then
+	
+	echo
+	echo "usearch11 is OK."
+	echo
+
+else
+	echo "Can not find usearch11"
+
+fi
+
+### Usearch81
+if [ -f ./modules/usearch/usearch81 ]; then
+	echo
+	echo "usearch81 is OK."
+	echo
+else
+	echo "Can't find usearch81."
+fi
+TESTS
+
+# USEARCH functions
+## Call functions in order
+echo "Running step 01: fastq_statistics"
+usearch_1_eestats $raw_dir $uout_dir $parameter_threads 
+
