@@ -31,18 +31,25 @@
 source intel/parameters.txt
 
 # Creating first folders
-mkdir -p artifacts test html output
+mkdir -p artifacts test html output raw
 
 # Importing sequences as a single artifact
 echo "Importing your sequences from manifest file..."
 
 if [[ ${paired_seqs} = "yes" ]]; then
 
+	if [[ -f ./intel.manifest.csv ]]; then
+
 	qiime tools import \
 	--type 'SampleData[PairedEndSequencesWithQuality]' \
 	--input-path ./intel/manifest.csv \
 	--output-path ./artifacts/demux.qza \
 	--input-format PairedEndFastqManifestPhred33
+
+	else 
+		echo "Missing manifest file at ./intel/manifest.csv; aborting..."
+		exit
+	fi
 fi
 
 echo "Generating visualization..."

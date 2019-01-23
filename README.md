@@ -3,9 +3,9 @@
 QIIME2 16S wrapper
 Implemented for QIIME2 2018.8
 
-Using QIIME2, runs a complete analysis from your data based on a range of optimizable parameters, such as trimming and truncate length, annotation identity, and cluster parameters.
+Runs a complete OTU analysis on your sequence data based on a range of optimizable parameters, such as trimming and truncate length, annotation identity, and cluster parameters.
 
-This is a work in progress, and i'm implementing features and user-friendliness as i go.
+This is a side project on my Masters Degree, and i will be implementing features and user-friendliness as i go.
 Any questions or suggestions, you can easily reach me on the e-mail rc.silva@unesp.br, with the subject "q2pipe: your subject"
 
 ### What you must install before running:
@@ -38,8 +38,10 @@ Any questions or suggestions, you can easily reach me on the e-mail rc.silva@une
 2. Create a manifest file, with the name manifest.csv, then put it inside the intel directory.
 3. Run q2manifest to import your data as a QIIME2 artifact.
 4. Open the demux-summary.html in a web browser, and pick parameters suitable to your sequences.
-5. Write these parameters on intel/parameters.sh.
-6. Run q2pipe and then q2picrust. That's it. Your results will be found at the test directory.
+5. Write these parameters on intel/parameters.txt
+6. Run q2pipe and then q2picrust. 
+
+And that's it.
 
 ### Current schema
 
@@ -53,7 +55,7 @@ Any questions or suggestions, you can easily reach me on the e-mail rc.silva@une
 	- Missing files;
 	- Missing databases;
 
-## Roadmap
+## Roadmap before alpha
 
 1. (done) Annotation with VSEARCH/BLAST over SILVA132 and the latest Greengenes.
 2. (done) Core diversity analysis with QIIME2.
@@ -69,8 +71,9 @@ Any questions or suggestions, you can easily reach me on the e-mail rc.silva@une
 ## References
 
 1. [QIIME2](https://qiime2.org/).
-2. DADA2 sequence denoise pipeline: Callahan, B. J., McMurdie, P. J., Rosen, M. J., Han, A. W., Johnson, A. J. A., & Holmes, S. P. (2016). DADA2: high-resolution sample inference from Illumina amplicon data. Nature methods, 13(7), 581.
-3. VSEARCH for sequence clustering and feature classification: Rognes, T., Flouri, T., Nichols, B., Quince, C., & Mahé, F. (2016). VSEARCH: a versatile open source tool for metagenomics. PeerJ, 4, e2584.
-4. BLAST also used for feature classification: Camacho, C., Coulouris, G., Avagyan, V., Ma, N., Papadopoulos, J., Bealer, K., & Madden, T. L. (2009). BLAST+: architecture and applications. BMC bioinformatics, 10(1), 421. 
-5. PICRUSt for metagenome prediction: Langille, M. G., Zaneveld, J., Caporaso, J. G., McDonald, D., Knights, D., Reyes, J. A., ... & Beiko, R. G. (2013). Predictive functional profiling of microbial communities using 16S rRNA marker gene sequences. Nature biotechnology, 31(9), 814.
+2. I can't thank enough Edgar at Drive5 (https://drive5.com/about.html) for many, many insights over the years. 
+3. DADA2 sequence denoise pipeline: Callahan, B. J., McMurdie, P. J., Rosen, M. J., Han, A. W., Johnson, A. J. A., & Holmes, S. P. (2016). DADA2: high-resolution sample inference from Illumina amplicon data. Nature methods, 13(7), 581.
+4. VSEARCH for sequence clustering and feature classification: Rognes, T., Flouri, T., Nichols, B., Quince, C., & Mahé, F. (2016). VSEARCH: a versatile open source tool for metagenomics. PeerJ, 4, e2584.
+5. BLAST also used for feature classification: Camacho, C., Coulouris, G., Avagyan, V., Ma, N., Papadopoulos, J., Bealer, K., & Madden, T. L. (2009). BLAST+: architecture and applications. BMC bioinformatics, 10(1), 421. 
+6. PICRUSt for metagenome prediction: Langille, M. G., Zaneveld, J., Caporaso, J. G., McDonald, D., Knights, D., Reyes, J. A., ... & Beiko, R. G. (2013). Predictive functional profiling of microbial communities using 16S rRNA marker gene sequences. Nature biotechnology, 31(9), 814.
 
