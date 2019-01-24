@@ -29,7 +29,8 @@ max_ee=04		# I always use from 0.5 (minimal errors) to 10
 parameter_identity=0.97		# Suggestions:
 				# 0.97 most relaxed, most errors
 				# 0.99 Edgar's default
-				# 1.00 most stringent, more OTUs, less counts
+				# 1.00 most stringent, more OTUs, less count
+
 
 # Number of threads to use
 parameter_threads=35
@@ -44,7 +45,8 @@ choosen_database="SILVA"
 coredir=`echo $PWD`	# DO NOT CHANGE THIS!
 			# Tells q2pipe to run it all on its own dir
 
-pylib='${coredir}/modules/python'
+# Overwrite USEARCH outputs?
+overwrite_usearch="False"		# { True | False }
 
 # Start preprocessing on demux.qza using this parameters?
 preproc="yes"		# { yes | no }
@@ -85,6 +87,8 @@ denovo="no"
 # If yes above, pick a cluster identity percentage
 parameter_cluster_id=0.99
 
+#################### DATABASES ##################################
+#								#
 # Reference sequences (qza) - current: Silva 0.99 full length
 # SILVA 128: ref_seqs="/work/db/qiime/SILVA_128_QIIME_release/artifacts/silva128_99.qza"
 # SILVA 132: 
@@ -96,6 +100,9 @@ ref_seqs="$coredir/db/silva132_99.qza"
 # SILVA 132: 
 ref_tax="$coredir/db/silva132_99_taxonomy.qza"
 # GDP: ref_tax="/data/db/qiime/GRD/artifacts/GRD_taxonomy.qza"
+
+# Oligonucleotide database
+db_primers="./db/primers.fa"
 
 # Arquivo de sequências representativas e tabela
 rep_seqs="${preprocname}-rep-seqs-dada2.qza"

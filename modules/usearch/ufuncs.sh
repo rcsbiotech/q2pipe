@@ -29,11 +29,19 @@
 
 ## USEARCH functions
 
-# 1. EEstats
-## Gets stats from the fastq dir, for every sample
+# 1. EEstats - gets stats from the fastq dir, for every sample
+##	Input: directory with fastq files
+##	Output format: txt files
+##	Output directory: preproc
 
+# 2. search_oligodb: looks for sequencing artifacts on the sequences
+##	Input: directory with fastq files
+##	Output format: txt files
+##	Output directory: preproc
+
+
+### Function 1: eestats
 usearch_1_eestats() {
-
 
 	dir_in=$1
 	dir_out=$2
@@ -43,23 +51,92 @@ usearch_1_eestats() {
 		
 		bn=`basename $fq .fastq`
 		echo "Starting run for $fq"
+		mkdir -p ${dir_out}/1_eestats/${bn}
 
-		usearch11 \
-			-fastx_info $fq \
-			-output ${dir_out}/${bn}.fastx.info.txt
+		## First section: fasxt_info
 
-		usearch11 \
-			-fastq_eestats $fq \
-			-output ${dir_out}/${bn}.eestats1.txt \
-			-threads ${p_threads}
+		if [ ! -f ${dir_out}/1_eestats/${bn}/fastx.info.txt ] || [ $overwrite_usearch = "True" ]; then 
+			
+			echo "Starting usearch..."
+			echo "TEST"
+			echo "TEST"
+			echo "TEST"
+			usearch11 \
+				-fastx_info $fq \
+				-output ${dir_out}/1_eestats/${bn}/fastx.info.txt
 
-		usearch11 \
-			-fastq_eestats2 $fq \
-			-output ${dir_out}/${bn}.eestats2.txt \
-			-threads ${p_threads} \
-			-length_cutoffs 150,350,25
+		else 
+			echo "File ${bn}/fastx.info.txt already exists. Skipping..."
+
+		fi
+
+		## Second section: eestats (simpler)
+
+		if [ ! -f ${dir_out}/1_eestats/${bn}/eestats1.txt ] || [ $overwrite_usearch = "True" ]; then
+
+			usearch11 \
+				-fastq_eestats $fq \
+				-output ${dir_out}/1_eestats/${bn}/eestats1.txt \
+				-threads ${p_threads}
+		else
+			echo "File ${bn}/eestats1.txt already exists. Skipping..."
+
+		fi
+
+		## Third section: eestats (robust)
+		
+		if [ ! -f ${dir_out}/1_eestats/${bn}/eestats2.txt ] || [ $overwrite_usearch = "True" ]; then
+
+			usearch11 \
+				-fastq_eestats2 $fq \
+				-output ${dir_out}/1_eestats/${bn}/eestats2.txt \
+				-threads ${p_threads} \
+				-ee_cutoffs 2.0,4.0,6.0 \
+				-length_cutoffs 150,350,25
+
+		else
+			echo "${bn}/eestats2.txt already exists. Skipping..."
+
+		fi
 
 		echo "Quality measures OK for $fq"
 
 	done
 }
+
+
+
+# ----- ########################### --- #
+# ----- ### Function 2: oligodb ### --- #
+# ----- ########################### --- #
+
+usearch_2_oligodb() {
+
+	dir_in=$1
+	dir_out=$2
+	oligos=$3
+
+	for fq in ${dir_in}/*.fastq; do
+		
+		bn=`basename $fq .fastq`
+		mkdir -p ${dir_out}/2_oligodb/${bn}
+	
+	if [ ! -f ${dir_out}/2_oligodb/${bn}/oligos.txt ] || [ $overwrite_usearch = "True" ]; then
+
+			usearch11 \
+				-search_oligodb $fq \
+				-db $oligos \
+				-strand both \
+				-userout ${dir_out}/2_oligodb/${bn}/oligos.txt \
+				-userfields query+qlo+qhi+qstrand
+		else
+
+			echo "File ${dir_out}/2_oligodb/${bn}/oligos.txt already exists. Skipping.."
+
+		fi
+
+
+	done
+
+}
+

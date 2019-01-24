@@ -67,3 +67,5 @@ TESTS
 echo "Running step 01: fastq_statistics"
 usearch_1_eestats $raw_dir $uout_dir $parameter_threads 
 
+echo "Running step 02: detecting oligos"
+usearch_2_oligodb $raw_dir $uout_dir $db_primers
