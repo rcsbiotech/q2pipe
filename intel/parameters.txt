@@ -45,8 +45,21 @@ choosen_database="SILVA"
 coredir=`echo $PWD`	# DO NOT CHANGE THIS!
 			# Tells q2pipe to run it all on its own dir
 
+#######################################
+######### USEARCH PARAMETERS ##########
+#######################################
+
 # Overwrite USEARCH outputs?
 overwrite_usearch="False"		# { True | False }
+
+# What's USEARCH run mode?
+u_runtype="complete"		# Options:
+				# "scan" - only generates statistics and metrics for raw fastq
+				# "preproc" - processes sequences based on parameters
+				# "annotate" - attributes taxonomy to sequences
+				# "otutab" - generates otu tables
+				# "analysis" - runs both otutab + annotate
+				# "complete" - run it all, back to back.
 
 # Start preprocessing on demux.qza using this parameters?
 preproc="yes"		# { yes | no }

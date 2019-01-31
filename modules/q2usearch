@@ -62,10 +62,39 @@ else
 fi
 TESTS
 
-# USEARCH functions
-## Call functions in order
-echo "Running step 01: fastq_statistics"
-usearch_1_eestats $raw_dir $uout_dir $parameter_threads 
+##
+##
+## TBI: Checks names and pairs from fqfiles
+## usearch_0_integrity $raw_dir
+##
+##
 
-echo "Running step 02: detecting oligos"
-usearch_2_oligodb $raw_dir $uout_dir $db_primers
+if [ $u_runtype = "scan" ] || [ $u_runtype = "complete" ]; then
+
+	# USEARCH functions
+	## Call functions in order
+	## Step 01. Sequence statistics...
+	echo "Running step 01: fastq_statistics"
+	usearch_1_eestats $raw_dir $uout_dir $parameter_threads 
+	
+	## Step 02. Search for oligo sequences on fastq
+	echo "Running step 02: detecting oligos"
+	usearch_2_oligodb $raw_dir $uout_dir $db_primers
+
+	echo "Preprocessing complete."
+	echo "You should now look your quality and info files, so you can decide"
+	echo "the better way to continue your data analysis."
+	echo "Particularly, lookup the primer position in your sequences, "
+	echo "and expected error values."
+
+else 
+	echo "Not running scan. Continuing..."
+
+fi
+
+## Step 3. Pair merge and quality check
+
+	echo "Merging fastq pairs..."
+	usearch_3_mergepairs $raw_dir $udata_dir
+	echo "Merge complete."
+

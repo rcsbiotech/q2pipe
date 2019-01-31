@@ -128,6 +128,7 @@ usearch_2_oligodb() {
 				-db $oligos \
 				-strand both \
 				-userout ${dir_out}/2_oligodb/${bn}/oligos.txt \
+				-threads ${p_threads} \
 				-userfields query+qlo+qhi+qstrand
 		else
 
@@ -138,5 +139,32 @@ usearch_2_oligodb() {
 
 	done
 
+}
+
+
+usearch_3_mergepairs() {
+	
+	dir_in=$1
+	dir_out=$2
+
+	mkdir -p ${dir_out}/processed
+
+        if [ ! -f ${dir_out}/processed/merged.fq ] || [ $overwrite_usearch = "True" ]; then
+
+		usearch11 \
+			-fastq_mergepairs ${dir_in}/*R1.fastq \
+			-fastqout ${dir_out}/processed/merged.fq \
+			-relabel @ \
+			-fastq_maxdiffs 10 \
+			-fastq_pctid 80 \
+			-report ${dir_out}/merge_log.txt 
+
+		echo "Running FastQC on merged file..."
+		fastqc -o ${dir_out}/processed -q ${dir_out}/processed/merged.fq
+
+	else
+		echo "Already merged. Skipping..."
+
+	fi
 }
 
