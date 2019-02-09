@@ -457,9 +457,11 @@ fi
 echo "Run name: $testname" | tee -a ${testdir}/run_report
 
 # Move outputs accordingly -> to inputs, and to diversity
-mkdir -p ${testdir}/diversity ${testdir}/inputs
+mkdir -p ${testdir}/diversity ${testdir}/inputs ${testdir}/inputs/pure ${testdir}/inputs/unrare
 mv -vu ${testdir}/alpha-rarefaction* ${testdir}/core-metrics-results ${testdir}/diversity
-mv -vu ${testdir}/corrupt ${testdir}/pure-table* ${testdir}/rarefied ${testdir}/taxonomy* ${testdir}/unrare* ${testdir}/useful ${testdir}/inputs
+mv -vu ${testdir}/corrupt ${testdir}/rarefied ${testdir}/taxonomy* ${testdir}/useful ${testdir}/inputs
+mv -vu ${testdir}/pure-table ${testdir}/inputs/pure*
+mv -vu ${testdir}/unrare/* ${testdir}/inputs/unrare/
 
 # Zip results
 echo

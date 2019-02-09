@@ -38,7 +38,7 @@
 source ./intel/parameters.txt
 
 ## Creates PICRUSt outdir
-#mkdir -p ${testdir}/picrust.${testname}
+mkdir -p ${testdir}/picrust.${testname}
 
 echo "Starting closed-reference clusterization"
 
