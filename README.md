@@ -1,3 +1,7 @@
+# Warning
+
+I've stopped using QIIME2 entirely, so be warned if anything below doesn't work for newer (2019/06) QIIME2 versions.
+
 # q2pipe
 
 QIIME2 16S wrapper
